@@ -1,20 +1,15 @@
-resource "azurerm_resource_group" "example" {
-  name     = "example-resources"
-  location = "centralus"
-}
-
-resource "azurerm_log_analytics_workspace" "example" {
-  name                = "acctest-01"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+resource "azurerm_log_analytics_workspace" "app_gw" {
+  name                = local.application_gateway_name
+  location            = var.location
+  resource_group_name = var.resource_group_name
   sku                 = "Free"
   retention_in_days   = 7
 }
 
-resource "azurerm_monitor_diagnostic_setting" "app-gw-aks" {
-  name                       = var.name
+resource "azurerm_monitor_diagnostic_setting" "app_gw" {
+  name                       = local.application_gateway_name
   target_resource_id         = azurerm_application_gateway.app_gw.id
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.example.id
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.app_gw.id
 
   dynamic "log" {
     for_each = [

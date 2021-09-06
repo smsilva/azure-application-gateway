@@ -1,5 +1,5 @@
 locals {
-  platform_instance_name = "wasp-sandbox-62w5ec"
+  platform_instance_name = "wasp-sandbox-1ac"
   location               = "centralus"
 }
 
@@ -9,7 +9,7 @@ resource "azurerm_resource_group" "default" {
 }
 
 resource "azurerm_virtual_network" "default" {
-  name                = "${azurerm_resource_group.default.name}-vnet"
+  name                = "${azurerm_resource_group.default.name}-vnet-app-gw"
   address_space       = ["10.100.0.0/16"]
   resource_group_name = azurerm_resource_group.default.name
   location            = azurerm_resource_group.default.location
@@ -21,14 +21,14 @@ resource "random_string" "subnet_id" {
     cluster_location       = local.location
   }
 
-  length      = 6
-  min_numeric = 3
+  length      = 3
+  min_numeric = 1
   special     = false
   upper       = false
 }
 
 resource "azurerm_subnet" "default" {
-  name                 = "subnet-${random_string.subnet_id.result}"
+  name                 = "${azurerm_virtual_network.default.name}-subnet-${random_string.subnet_id.result}"
   address_prefixes     = ["10.100.2.0/27"]
   virtual_network_name = azurerm_virtual_network.default.name
   resource_group_name  = azurerm_resource_group.default.name
