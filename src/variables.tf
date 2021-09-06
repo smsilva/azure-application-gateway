@@ -45,7 +45,7 @@ variable "sku_tier" {
 variable "sku_capacity" {
   type        = string
   description = "(Optional if autoscale_configuration is set) The Capacity of the SKU to use for this Application Gateway. When using a V1 SKU this value must be between 1 and 32, and 1 to 125 for a V2 SKU."
-  default     = null
+  default     = 0
 }
 
 variable "autoscale_configuration" {

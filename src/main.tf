@@ -1,17 +1,29 @@
 data "azurerm_client_config" "current" {
 }
 
-locals {
-  public_ip_name                 = "${var.name}-app-gw"
-  backend_address_pool_name      = "${var.name}-beap"
-  frontend_port_name             = "${var.name}-feport"
-  frontend_ip_configuration_name = "${var.name}-feip"
-  http_setting_name              = "${var.name}-be-htst"
-  listener_name                  = "${var.name}-httplstn"
-  request_routing_rule_name      = "${var.name}-rqrt"
+resource "random_string" "application_gateway_id" {
+  keepers = {
+    platform_instance_name = var.platform_instance_name
+    cluster_location       = var.location
+  }
+
+  length      = 6
+  min_numeric = 3
+  special     = false
+  upper       = false
 }
 
-resource "azurerm_public_ip" "app-gw-aks" {
+locals {
+  public_ip_name                 = "${var.platform_instance_name}-${var.name}-${random_string.application_gateway_id.result}-pip"
+  backend_address_pool_name      = "${var.platform_instance_name}-${var.name}-${random_string.application_gateway_id.result}-be-ap"
+  frontend_port_name             = "${var.platform_instance_name}-${var.name}-${random_string.application_gateway_id.result}-fe-port"
+  frontend_ip_configuration_name = "${var.platform_instance_name}-${var.name}-${random_string.application_gateway_id.result}-fe-ip"
+  http_setting_name              = "${var.platform_instance_name}-${var.name}-${random_string.application_gateway_id.result}-be-htst"
+  listener_name                  = "${var.platform_instance_name}-${var.name}-${random_string.application_gateway_id.result}-http-listener"
+  request_routing_rule_name      = "${var.platform_instance_name}-${var.name}-${random_string.application_gateway_id.result}-rqrt"
+}
+
+resource "azurerm_public_ip" "app_gw" {
   name                = local.public_ip_name
   resource_group_name = var.resource_group_name
   location            = var.location
@@ -21,14 +33,14 @@ resource "azurerm_public_ip" "app-gw-aks" {
   tags                = var.tags
 }
 
-resource "azurerm_user_assigned_identity" "app-gw-aks" {
+resource "azurerm_user_assigned_identity" "app_gw" {
   resource_group_name = var.resource_group_name
   location            = var.location
   name                = var.name
   tags                = var.tags
 }
 
-resource "azurerm_application_gateway" "app-gw-aks" {
+resource "azurerm_application_gateway" "app_gw" {
   name                = var.name
   resource_group_name = var.resource_group_name
   location            = var.location
@@ -39,7 +51,7 @@ resource "azurerm_application_gateway" "app-gw-aks" {
   sku {
     name     = var.sku_name
     tier     = var.sku_tier
-    capacity = var.autoscale_configuration == null ? var.sku_capacity : null
+    capacity = var.autoscale_configuration == null ? var.sku_capacity : 1
   }
 
   dynamic "autoscale_configuration" {
@@ -67,7 +79,7 @@ resource "azurerm_application_gateway" "app-gw-aks" {
 
   frontend_ip_configuration {
     name                 = local.frontend_ip_configuration_name
-    public_ip_address_id = azurerm_public_ip.app-gw-aks.id
+    public_ip_address_id = azurerm_public_ip.app_gw.id
   }
 
   backend_address_pool {
@@ -116,34 +128,34 @@ resource "azurerm_application_gateway" "app-gw-aks" {
   }
 
   depends_on = [
-    azurerm_public_ip.app-gw-aks
+    azurerm_public_ip.app_gw
   ]
 }
 
 resource "azurerm_role_assignment" "app-gw-aks" {
-  scope                = azurerm_application_gateway.app-gw-aks.id
+  scope                = azurerm_application_gateway.app_gw.id
   role_definition_name = "Contributor"
-  principal_id         = azurerm_user_assigned_identity.app-gw-aks.principal_id
+  principal_id         = azurerm_user_assigned_identity.app_gw.principal_id
 
   depends_on = [
-    azurerm_application_gateway.app-gw-aks,
-    azurerm_user_assigned_identity.app-gw-aks
+    azurerm_application_gateway.app_gw,
+    azurerm_user_assigned_identity.app_gw
   ]
 }
 
 resource "azurerm_role_assignment" "app-gw-aks-rg" {
   scope                = "/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${var.resource_group_name}"
   role_definition_name = "Reader"
-  principal_id         = azurerm_user_assigned_identity.app-gw-aks.principal_id
+  principal_id         = azurerm_user_assigned_identity.app_gw.principal_id
 
   depends_on = [
-    azurerm_user_assigned_identity.app-gw-aks
+    azurerm_user_assigned_identity.app_gw
   ]
 }
 
 resource "azurerm_monitor_diagnostic_setting" "app-gw-aks" {
   name                       = var.name
-  target_resource_id         = azurerm_application_gateway.app-gw-aks.id
+  target_resource_id         = azurerm_application_gateway.app_gw.id
   log_analytics_workspace_id = var.log_analytics_workspace_id
 
   dynamic "log" {
@@ -171,6 +183,6 @@ resource "azurerm_monitor_diagnostic_setting" "app-gw-aks" {
   }
 
   depends_on = [
-    azurerm_application_gateway.app-gw-aks
+    azurerm_application_gateway.app_gw
   ]
 }

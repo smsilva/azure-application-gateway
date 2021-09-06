@@ -34,16 +34,16 @@ resource "azurerm_subnet" "default" {
   resource_group_name  = azurerm_resource_group.default.name
 }
 
-//module "application_gateway" {
-//  source = "../../src"
-//
-//  name                       = "app-gw"
-//  platform_instance_name     = "wasp-sandbox-62w5ec"
-//  resource_group_name        = azurerm_resource_group.default.name
-//  location                   = azurerm_resource_group.default.location
-//  subnet_id                  = ""
-//  log_analytics_workspace_id = ""
-//}
+module "application_gateway" {
+  source = "../../src"
+
+  name                       = "app-gw"
+  platform_instance_name     = local.platform_instance_name
+  location                   = local.location
+  resource_group_name        = azurerm_resource_group.default.name
+  subnet_id                  = azurerm_subnet.default.id
+  log_analytics_workspace_id = null
+}
 
 output "vnet_id" {
   value = azurerm_virtual_network.default.id
@@ -51,4 +51,8 @@ output "vnet_id" {
 
 output "subnet_id" {
   value = azurerm_subnet.default.id
+}
+
+output "application_gateway_id" {
+  value = module.application_gateway.id
 }
