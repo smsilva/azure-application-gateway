@@ -1,5 +1,5 @@
 locals {
-  platform_instance_name = "wasp-sandbox-1ac"
+  platform_instance_name = "wasp-sbx-1ac"
   location               = "centralus"
 }
 
