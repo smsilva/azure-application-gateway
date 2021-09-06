@@ -30,22 +30,10 @@ variable "tags" {
   default     = {}
 }
 
-variable "sku_name" {
-  type        = string
-  description = "(Required) The Name of the SKU to use for this Application Gateway. Possible values are Standard_Small, Standard_Medium, Standard_Large, Standard_v2, WAF_Medium, WAF_Large, and WAF_v2."
-  default     = "Standard_Small"
-}
-
-variable "sku_tier" {
-  type        = string
-  description = "(Required) The Tier of the SKU to use for this Application Gateway. Possible values are Standard, Standard_v2, WAF and WAF_v2."
-  default     = "Standard"
-}
-
 variable "sku_capacity" {
   type        = string
   description = "(Optional if autoscale_configuration is set) The Capacity of the SKU to use for this Application Gateway. When using a V1 SKU this value must be between 1 and 32, and 1 to 125 for a V2 SKU."
-  default     = 0
+  default     = 1
 }
 
 variable "autoscale_configuration" {
@@ -54,10 +42,7 @@ variable "autoscale_configuration" {
     max_capacity = number
   })
   description = "(Optional) An autoscale configuration object. Accepted values for min_capacity are in the range 0 to 100. Accepted values for max_capacity are in the range 2 to 125."
-  default = {
-    min_capacity = 2
-    max_capacity = 10
-  }
+  default     = null
 }
 
 variable "subnet_id" {
@@ -75,9 +60,4 @@ variable "public_ip_domain_name_label" {
   type        = string
   description = "(Optional) The Public IP DNS name label."
   default     = null
-}
-
-variable "log_analytics_workspace_id" {
-  type        = string
-  description = "(Required) The ID of the Log Analytics Workspace which the Application Gateway should send data to."
 }

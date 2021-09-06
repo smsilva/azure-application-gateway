@@ -42,17 +42,8 @@ module "application_gateway" {
   location                   = local.location
   resource_group_name        = azurerm_resource_group.default.name
   subnet_id                  = azurerm_subnet.default.id
-  log_analytics_workspace_id = null
 }
 
-output "vnet_id" {
-  value = azurerm_virtual_network.default.id
-}
-
-output "subnet_id" {
-  value = azurerm_subnet.default.id
-}
-
-output "application_gateway_id" {
-  value = module.application_gateway.id
+output "application_gateway" {
+  value = module.application_gateway
 }

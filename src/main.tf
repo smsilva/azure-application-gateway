@@ -14,6 +14,7 @@ resource "random_string" "application_gateway_id" {
 }
 
 locals {
+  application_gateway_name       = "${var.platform_instance_name}-${var.name}-${random_string.application_gateway_id.result}"
   public_ip_name                 = "${var.platform_instance_name}-${var.name}-${random_string.application_gateway_id.result}-pip"
   backend_address_pool_name      = "${var.platform_instance_name}-${var.name}-${random_string.application_gateway_id.result}-be-ap"
   frontend_port_name             = "${var.platform_instance_name}-${var.name}-${random_string.application_gateway_id.result}-fe-port"
@@ -33,15 +34,8 @@ resource "azurerm_public_ip" "app_gw" {
   tags                = var.tags
 }
 
-resource "azurerm_user_assigned_identity" "app_gw" {
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  name                = var.name
-  tags                = var.tags
-}
-
 resource "azurerm_application_gateway" "app_gw" {
-  name                = var.name
+  name                = local.application_gateway_name
   resource_group_name = var.resource_group_name
   location            = var.location
   zones               = var.zones
@@ -49,8 +43,8 @@ resource "azurerm_application_gateway" "app_gw" {
   tags                = var.tags
 
   sku {
-    name     = var.sku_name
-    tier     = var.sku_tier
+    name     = "Standard_v2"
+    tier     = "Standard_v2"
     capacity = var.autoscale_configuration == null ? var.sku_capacity : 1
   }
 
@@ -91,7 +85,7 @@ resource "azurerm_application_gateway" "app_gw" {
     cookie_based_affinity = "Disabled"
     port                  = 80
     protocol              = "Http"
-    request_timeout       = 1
+    request_timeout       = 3
   }
 
   http_listener {
@@ -129,60 +123,5 @@ resource "azurerm_application_gateway" "app_gw" {
 
   depends_on = [
     azurerm_public_ip.app_gw
-  ]
-}
-
-resource "azurerm_role_assignment" "app-gw-aks" {
-  scope                = azurerm_application_gateway.app_gw.id
-  role_definition_name = "Contributor"
-  principal_id         = azurerm_user_assigned_identity.app_gw.principal_id
-
-  depends_on = [
-    azurerm_application_gateway.app_gw,
-    azurerm_user_assigned_identity.app_gw
-  ]
-}
-
-resource "azurerm_role_assignment" "app-gw-aks-rg" {
-  scope                = "/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${var.resource_group_name}"
-  role_definition_name = "Reader"
-  principal_id         = azurerm_user_assigned_identity.app_gw.principal_id
-
-  depends_on = [
-    azurerm_user_assigned_identity.app_gw
-  ]
-}
-
-resource "azurerm_monitor_diagnostic_setting" "app-gw-aks" {
-  name                       = var.name
-  target_resource_id         = azurerm_application_gateway.app_gw.id
-  log_analytics_workspace_id = var.log_analytics_workspace_id
-
-  dynamic "log" {
-    for_each = ["ApplicationGatewayAccessLog", "ApplicationGatewayPerformanceLog", "ApplicationGatewayFirewallLog"]
-
-    content {
-      category = log.value
-      enabled  = true
-
-      retention_policy {
-        enabled = true
-        days    = 0
-      }
-    }
-  }
-
-  metric {
-    category = "AllMetrics"
-    enabled  = true
-
-    retention_policy {
-      enabled = true
-      days    = 0
-    }
-  }
-
-  depends_on = [
-    azurerm_application_gateway.app_gw
   ]
 }
