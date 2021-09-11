@@ -1,7 +1,7 @@
 resource "azurerm_log_analytics_workspace" "app_gw" {
   name                = local.application_gateway_name
   location            = var.location
-  resource_group_name = var.resource_group_name
+  resource_group_name = azurerm_resource_group.app_gw.name
   sku                 = "Free"
   retention_in_days   = 7
 }

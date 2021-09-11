@@ -8,11 +8,6 @@ variable "name" {
   description = "(Required) The name of the Application Gateway."
 }
 
-variable "resource_group_name" {
-  type        = string
-  description = "(Required) The name of the resource group."
-}
-
 variable "location" {
   type        = string
   description = "(Required) The location of the resources."

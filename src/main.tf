@@ -5,10 +5,11 @@ resource "random_string" "application_gateway_id" {
   keepers = {
     platform_instance_name = var.platform_instance_name
     cluster_location       = var.location
+    name                   = var.name
   }
 
-  length      = 6
-  min_numeric = 3
+  length      = 3
+  min_numeric = 1
   special     = false
   upper       = false
 }
@@ -24,9 +25,14 @@ locals {
   request_routing_rule_name      = "${var.platform_instance_name}-${var.name}-${random_string.application_gateway_id.result}-rqrt"
 }
 
+resource "azurerm_resource_group" "app_gw" {
+  name     = local.application_gateway_name
+  location = var.location
+}
+
 resource "azurerm_public_ip" "app_gw" {
   name                = local.public_ip_name
-  resource_group_name = var.resource_group_name
+  resource_group_name = azurerm_resource_group.app_gw.name
   location            = var.location
   sku                 = "Standard"
   allocation_method   = "Static"
@@ -36,7 +42,7 @@ resource "azurerm_public_ip" "app_gw" {
 
 resource "azurerm_application_gateway" "app_gw" {
   name                = local.application_gateway_name
-  resource_group_name = var.resource_group_name
+  resource_group_name = azurerm_resource_group.app_gw.name
   location            = var.location
   zones               = var.zones
   firewall_policy_id  = var.firewall_policy_id
