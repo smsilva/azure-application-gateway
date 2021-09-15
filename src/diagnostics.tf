@@ -2,8 +2,8 @@ resource "azurerm_log_analytics_workspace" "app_gw" {
   name                = local.application_gateway_name
   location            = var.location
   resource_group_name = azurerm_resource_group.app_gw.name
-  sku                 = "Free"
-  retention_in_days   = 7
+  sku                 = "PerGB2018"
+  retention_in_days   = 30
 }
 
 resource "azurerm_monitor_diagnostic_setting" "app_gw" {
@@ -23,19 +23,19 @@ resource "azurerm_monitor_diagnostic_setting" "app_gw" {
       enabled  = true
 
       retention_policy {
-        enabled = true
-        days    = 0
+        enabled = false
+        days    = 30
       }
     }
   }
 
   metric {
     category = "AllMetrics"
-    enabled  = true
+    enabled  = false
 
     retention_policy {
-      enabled = true
-      days    = 0
+      enabled = false
+      days    = 30
     }
   }
 

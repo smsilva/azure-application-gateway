@@ -4,10 +4,6 @@
 # Secure traffic with a web application firewall (WAF)
 # https://docs.microsoft.com/en-us/azure/aks/operator-best-practices-network#secure-traffic-with-a-web-application-firewall-waf
 
-variable "platform_instance_name" {
-  default = "crow-sandbox-iq1"
-}
-
 locals {
   location                = "centralus"
   name                    = "app-gw"
