@@ -10,6 +10,7 @@ resource "random_string" "application_gateway_id" {
 
   length      = 3
   min_numeric = 1
+  min_lower   = 1
   special     = false
   upper       = false
 }
@@ -34,8 +35,8 @@ resource "azurerm_public_ip" "app_gw" {
   name                = local.public_ip_name
   resource_group_name = azurerm_resource_group.app_gw.name
   location            = var.location
-  sku                 = "Standard"
-  allocation_method   = "Static"
+  sku                 = var.public_ip_sku
+  allocation_method   = var.public_ip_allocation_method
   domain_name_label   = var.public_ip_domain_name_label != null ? var.public_ip_domain_name_label : local.public_ip_name
   tags                = var.tags
 }
@@ -49,8 +50,8 @@ resource "azurerm_application_gateway" "app_gw" {
   tags                = var.tags
 
   sku {
-    name     = "Standard_v2"
-    tier     = "Standard_v2"
+    name     = var.sku_name
+    tier     = var.sku_tier
     capacity = var.autoscale_configuration == null ? var.sku_capacity : 1
   }
 

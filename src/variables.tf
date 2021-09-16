@@ -25,10 +25,34 @@ variable "tags" {
   default     = {}
 }
 
+variable "sku_name" {
+  type        = string
+  description = "(Required) SKU Name"
+  default     = "WAF_V2"
+}
+
+variable "sku_tier" {
+  type        = string
+  description = "(Required) SKU Tier"
+  default     = "WAF_V2"
+}
+
 variable "sku_capacity" {
   type        = string
   description = "(Optional if autoscale_configuration is set) The Capacity of the SKU to use for this Application Gateway. When using a V1 SKU this value must be between 1 and 32, and 1 to 125 for a V2 SKU."
   default     = 1
+}
+
+variable "public_ip_allocation_method" {
+  type        = string
+  description = "(Required) Public IP Allocation Method"
+  default     = "Static"
+}
+
+variable "public_ip_sku" {
+  type        = string
+  description = "(Required) Public IP SKU"
+  default     = "Standard"
 }
 
 variable "autoscale_configuration" {

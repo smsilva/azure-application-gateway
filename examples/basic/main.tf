@@ -8,12 +8,12 @@ locals {
   location                = "centralus"
   name                    = "app-gw"
   virtual_network_name    = "vnet-public"
-  virtual_network_cidrs   = ["10.100.0.0/16"]
-  virtual_network_subnets = [{ cidr = "10.100.2.0/27", name = "application-gateway" }]
+  virtual_network_cidrs   = ["10.200.0.0/16"]
+  virtual_network_subnets = [{ cidr = "10.200.2.0/27", name = "app-gw" }]
 }
 
 module "vnet" {
-  source = "git@github.com:smsilva/azure-network.git//src/vnet?ref=1.0.0"
+  source = "git@github.com:smsilva/azure-network.git//src/vnet?ref=main"
 
   platform_instance_name = var.platform_instance_name
   location               = local.location
@@ -28,9 +28,9 @@ module "application_gateway" {
   name                   = "app-gw"
   platform_instance_name = var.platform_instance_name
   location               = local.location
-  subnet_id              = module.vnet.subnets["application-gateway"].instance.id
+  subnet_id              = module.vnet.subnets["app-gw"].instance.id
 }
 
-output "application_gateway" {
+output "module_application_gateway_outputs" {
   value = module.application_gateway
 }
