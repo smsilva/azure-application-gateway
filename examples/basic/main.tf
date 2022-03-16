@@ -35,9 +35,13 @@ module "vnet" {
 module "application_gateway" {
   source = "../../src"
 
-  name      = local.application_gateway_name
-  location  = local.location
-  subnet_id = module.vnet.subnets["app-gw"].instance.id
+  name           = local.application_gateway_name
+  resource_group = azurerm_resource_group.default
+  subnet_id      = module.vnet.subnets["app-gw"].instance.id
+
+  depends_on = [
+    azurerm_resource_group.default
+  ]
 }
 
 output "module_application_gateway_outputs" {

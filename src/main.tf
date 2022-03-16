@@ -9,25 +9,28 @@ locals {
   request_routing_rule_name      = var.name
 }
 
-resource "azurerm_resource_group" "app_gw" {
-  name     = local.application_gateway_name
-  location = var.location
+data "azurerm_resource_group" "default" {
+  name = var.resource_group.name
 }
 
-resource "azurerm_public_ip" "app_gw" {
+resource "azurerm_public_ip" "default" {
   name                = local.public_ip_name
-  resource_group_name = azurerm_resource_group.app_gw.name
-  location            = var.location
+  resource_group_name = data.azurerm_resource_group.default.name
+  location            = data.azurerm_resource_group.default.location
   sku                 = var.public_ip_sku
   allocation_method   = var.public_ip_allocation_method
   domain_name_label   = var.public_ip_domain_name_label != null ? var.public_ip_domain_name_label : local.public_ip_name
   tags                = var.tags
+
+  depends_on = [
+    data.azurerm_resource_group.default
+  ]
 }
 
-resource "azurerm_application_gateway" "app_gw" {
+resource "azurerm_application_gateway" "default" {
   name                = local.application_gateway_name
-  resource_group_name = azurerm_resource_group.app_gw.name
-  location            = var.location
+  resource_group_name = data.azurerm_resource_group.default.name
+  location            = data.azurerm_resource_group.default.location
   zones               = var.zones
   firewall_policy_id  = var.firewall_policy_id
   tags                = var.tags
@@ -63,7 +66,7 @@ resource "azurerm_application_gateway" "app_gw" {
 
   frontend_ip_configuration {
     name                 = local.frontend_ip_configuration_name
-    public_ip_address_id = azurerm_public_ip.app_gw.id
+    public_ip_address_id = azurerm_public_ip.default.id
   }
 
   backend_address_pool {
@@ -112,6 +115,6 @@ resource "azurerm_application_gateway" "app_gw" {
   }
 
   depends_on = [
-    azurerm_public_ip.app_gw
+    azurerm_public_ip.default
   ]
 }

@@ -3,9 +3,11 @@ variable "name" {
   description = "(Required) The name of the Application Gateway."
 }
 
-variable "location" {
-  type        = string
-  description = "(Required) The location of the resources."
+variable "resource_group" {
+  type = object({
+    name     = string
+    location = string
+  })
 }
 
 variable "zones" {
