@@ -1,29 +1,12 @@
-data "azurerm_client_config" "current" {
-}
-
-resource "random_string" "application_gateway_id" {
-  keepers = {
-    platform_instance_name = var.platform_instance_name
-    cluster_location       = var.location
-    name                   = var.name
-  }
-
-  length      = 3
-  min_numeric = 1
-  min_lower   = 1
-  special     = false
-  upper       = false
-}
-
 locals {
-  application_gateway_name       = "${var.platform_instance_name}-${var.name}-${random_string.application_gateway_id.result}"
-  public_ip_name                 = "${var.platform_instance_name}-${var.name}-${random_string.application_gateway_id.result}-pip"
-  backend_address_pool_name      = "${var.platform_instance_name}-${var.name}-${random_string.application_gateway_id.result}-be-ap"
-  frontend_port_name             = "${var.platform_instance_name}-${var.name}-${random_string.application_gateway_id.result}-fe-port"
-  frontend_ip_configuration_name = "${var.platform_instance_name}-${var.name}-${random_string.application_gateway_id.result}-fe-ip"
-  http_setting_name              = "${var.platform_instance_name}-${var.name}-${random_string.application_gateway_id.result}-be-htst"
-  listener_name                  = "${var.platform_instance_name}-${var.name}-${random_string.application_gateway_id.result}-http-listener"
-  request_routing_rule_name      = "${var.platform_instance_name}-${var.name}-${random_string.application_gateway_id.result}-rqrt"
+  application_gateway_name       = var.name
+  public_ip_name                 = var.name
+  backend_address_pool_name      = var.name
+  frontend_port_name             = var.name
+  frontend_ip_configuration_name = var.name
+  http_setting_name              = var.name
+  listener_name                  = var.name
+  request_routing_rule_name      = var.name
 }
 
 resource "azurerm_resource_group" "app_gw" {

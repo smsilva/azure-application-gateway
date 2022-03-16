@@ -1,3 +1,5 @@
+data "azurerm_client_config" "current" {}
+
 resource "azurerm_user_assigned_identity" "app_gw" {
   name                = local.application_gateway_name
   resource_group_name = azurerm_resource_group.app_gw.name

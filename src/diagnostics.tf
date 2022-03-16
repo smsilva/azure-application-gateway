@@ -4,6 +4,7 @@ resource "azurerm_log_analytics_workspace" "app_gw" {
   resource_group_name = azurerm_resource_group.app_gw.name
   sku                 = "PerGB2018"
   retention_in_days   = 30
+  tags                = var.tags
 }
 
 resource "azurerm_monitor_diagnostic_setting" "app_gw" {
@@ -40,6 +41,7 @@ resource "azurerm_monitor_diagnostic_setting" "app_gw" {
   }
 
   depends_on = [
-    azurerm_application_gateway.app_gw
+    azurerm_application_gateway.app_gw,
+    azurerm_log_analytics_workspace.app_gw
   ]
 }

@@ -1,8 +1,3 @@
-variable "platform_instance_name" {
-  type        = string
-  description = "(Required) Platform Instance Name"
-}
-
 variable "name" {
   type        = string
   description = "(Required) The name of the Application Gateway."
