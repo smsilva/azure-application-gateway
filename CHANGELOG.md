@@ -1,3 +1,9 @@
+## 1.1.0 (2022-03-16)
+
+### Feat
+
+- **src/security.tf**: Removed Identity Creation
+
 ## 1.0.0 (2022-03-16)
 
 ### Feat
