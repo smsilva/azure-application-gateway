@@ -78,7 +78,7 @@ resource "azurerm_application_gateway" "default" {
     cookie_based_affinity = "Disabled"
     port                  = 80
     protocol              = "Http"
-    request_timeout       = 3
+    request_timeout       = 10
   }
 
   http_listener {
