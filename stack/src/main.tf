@@ -10,11 +10,11 @@ resource "azurerm_resource_group" "default" {
 }
 
 module "appgw" {
-  source = "../../src"
+  source = "git@github.com:smsilva/azure-application-gateway.git//src?ref=1.2.0"
 
   name           = local.application_gateway_name
   resource_group = azurerm_resource_group.default
-  subnet         = var.subnet_id
+  subnet         = var.subnet
 
   depends_on = [
     module.vnet
