@@ -4,6 +4,7 @@ variable "name" {
 }
 
 variable "resource_group" {
+  description = "(Required) Application Gateway Resource Group"
   type = object({
     name     = string
     location = string
@@ -34,12 +35,6 @@ variable "sku_tier" {
   default     = "WAF_V2"
 }
 
-variable "sku_capacity" {
-  type        = string
-  description = "(Optional if autoscale_configuration is set) The Capacity of the SKU to use for this Application Gateway. When using a V1 SKU this value must be between 1 and 32, and 1 to 125 for a V2 SKU."
-  default     = 1
-}
-
 variable "public_ip_allocation_method" {
   type        = string
   description = "(Required) Public IP Allocation Method"
@@ -53,23 +48,20 @@ variable "public_ip_sku" {
 }
 
 variable "autoscale_configuration" {
+  description = "(Optional) An autoscale configuration object. Accepted values for min_capacity are in the range 0 to 100. Accepted values for max_capacity are in the range 2 to 125."
   type = object({
     min_capacity = number
     max_capacity = number
   })
-  description = "(Optional) An autoscale configuration object. Accepted values for min_capacity are in the range 0 to 100. Accepted values for max_capacity are in the range 2 to 125."
-  default     = null
+  default = {
+    min_capacity = 1
+    max_capacity = 5
+  }
 }
 
 variable "subnet_id" {
   type        = string
   description = "(Required) The ID of the Subnet which the Application Gateway should be connected to."
-}
-
-variable "firewall_policy_id" {
-  type        = string
-  description = "(Optional) The ID of the Web Application Firewall Policy."
-  default     = null
 }
 
 variable "public_ip_domain_name_label" {
