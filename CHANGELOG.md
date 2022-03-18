@@ -1,3 +1,16 @@
+## 1.2.0 (2022-03-18)
+
+### Refactor
+
+- Update Variable Names and Module Version
+- **src/variables.tf**: Remove unused variables
+- **src/main.tf**: Remove dynamic block for autoscale_configuration
+- **examples/**: Simplified examples
+
+### Feat
+
+- **stack/**: Create a Folder for Stack base
+
 ## 1.1.1 (2022-03-17)
 
 ### Fix
