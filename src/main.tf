@@ -32,21 +32,16 @@ resource "azurerm_application_gateway" "default" {
   resource_group_name = data.azurerm_resource_group.default.name
   location            = data.azurerm_resource_group.default.location
   zones               = var.zones
-  firewall_policy_id  = var.firewall_policy_id
   tags                = var.tags
 
   sku {
-    name     = var.sku_name
-    tier     = var.sku_tier
-    capacity = var.autoscale_configuration == null ? var.sku_capacity : 1
+    name = var.sku_name
+    tier = var.sku_tier
   }
 
-  dynamic "autoscale_configuration" {
-    for_each = var.autoscale_configuration != null ? { config = var.autoscale_configuration } : {}
-    content {
-      min_capacity = autoscale_configuration.value.min_capacity
-      max_capacity = autoscale_configuration.value.max_capacity
-    }
+  autoscale_configuration {
+    min_capacity = var.autoscale_configuration.min_capacity
+    max_capacity = var.autoscale_configuration.max_capacity
   }
 
   gateway_ip_configuration {
