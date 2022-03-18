@@ -46,7 +46,7 @@ resource "azurerm_application_gateway" "default" {
 
   gateway_ip_configuration {
     name      = var.name
-    subnet_id = var.subnet_id
+    subnet_id = var.subnet.id
   }
 
   frontend_port {

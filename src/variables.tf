@@ -35,18 +35,6 @@ variable "sku_tier" {
   default     = "WAF_V2"
 }
 
-variable "public_ip_allocation_method" {
-  type        = string
-  description = "(Required) Public IP Allocation Method"
-  default     = "Static"
-}
-
-variable "public_ip_sku" {
-  type        = string
-  description = "(Required) Public IP SKU"
-  default     = "Standard"
-}
-
 variable "autoscale_configuration" {
   description = "(Optional) An autoscale configuration object. Accepted values for min_capacity are in the range 0 to 100. Accepted values for max_capacity are in the range 2 to 125."
   type = object({
@@ -59,9 +47,20 @@ variable "autoscale_configuration" {
   }
 }
 
-variable "subnet_id" {
+variable "subnet" {
+  description = "(Required) The Subnet which the Application Gateway should be connected to."
+}
+
+variable "public_ip_allocation_method" {
   type        = string
-  description = "(Required) The ID of the Subnet which the Application Gateway should be connected to."
+  description = "(Required) Public IP Allocation Method"
+  default     = "Static"
+}
+
+variable "public_ip_sku" {
+  type        = string
+  description = "(Required) Public IP SKU"
+  default     = "Standard"
 }
 
 variable "public_ip_domain_name_label" {

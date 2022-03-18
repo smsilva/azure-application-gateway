@@ -13,7 +13,7 @@ module "application_gateway" {
 
   name           = local.application_gateway_name
   resource_group = azurerm_resource_group.default
-  subnet_id      = module.vnet.subnets["app-gw"].instance.id
+  subnet         = module.vnet.subnets["app-gw"].instance
 
   depends_on = [
     azurerm_resource_group.default
