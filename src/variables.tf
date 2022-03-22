@@ -17,6 +17,11 @@ variable "zones" {
   default     = []
 }
 
+variable "enable_http2" {
+  type    = bool
+  default = true
+}
+
 variable "tags" {
   type        = map(string)
   description = "(Optional) A map of tags to assign to the API Management service."

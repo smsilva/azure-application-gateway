@@ -31,6 +31,7 @@ resource "azurerm_application_gateway" "default" {
   name                = local.application_gateway_name
   resource_group_name = data.azurerm_resource_group.default.name
   location            = data.azurerm_resource_group.default.location
+  enable_http2        = var.enable_http2
   zones               = var.zones
   tags                = var.tags
 
