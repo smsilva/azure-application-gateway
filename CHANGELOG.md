@@ -1,3 +1,10 @@
+## 1.3.0 (2022-03-22)
+
+### Feat
+
+- **src/**: Enable http2 using a Variable with default true
+- **stack/src/main.tf**: Update Module Reference
+
 ## 1.2.0 (2022-03-18)
 
 ### Refactor
