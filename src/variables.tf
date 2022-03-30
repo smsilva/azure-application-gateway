@@ -31,13 +31,13 @@ variable "tags" {
 variable "sku_name" {
   type        = string
   description = "(Required) SKU Name"
-  default     = "WAF_V2"
+  default     = "WAF_v2"
 }
 
 variable "sku_tier" {
   type        = string
   description = "(Required) SKU Tier"
-  default     = "WAF_V2"
+  default     = "WAF_v2"
 }
 
 variable "autoscale_configuration" {
