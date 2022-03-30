@@ -1,3 +1,9 @@
+## 1.4.0 (2022-03-30)
+
+### Feat
+
+- Update Application Gateway Module to become compatible with azurerm 3.0.0
+
 ## 1.3.0 (2022-03-22)
 
 ### Feat
